@@ -1,0 +1,47 @@
+# Step 1: Import Libraries
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
+
+# Step 2: Sample Dataset (Small and Easy to Test)
+data = {
+    "Message": [
+        "Congratulations! You've won a lottery. Claim your prize now!",
+        "This is your last chance to earn $1000. Act now!",
+        "Hi, can we schedule a meeting tomorrow?",
+        "Don't forget to submit your assignment before 5 PM.",
+        "Earn money quickly by clicking this link!",
+        "Hey, how are you doing today?",
+    ],
+    "Label": ["spam", "spam", "ham", "ham", "spam", "ham"],
+}
+
+# Step 3: Prepare the Dataset
+import pandas as pd
+df = pd.DataFrame(data)
+X = df["Message"]
+y = df["Label"].map({"ham": 0, "spam": 1})  # Convert labels to 0 (ham) and 1 (spam)
+
+# Step 4: Feature Extraction
+vectorizer = CountVectorizer()
+X_vectorized = vectorizer.fit_transform(X)
+
+# Step 5: Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(X_vectorized, y, test_size=0.2, random_state=42)
+
+# Step 6: Train the Model
+model = MultinomialNB()
+model.fit(X_train, y_train)
+
+# Step 7: Take User Input
+user_input = input("Enter an email message to check if it's spam or not: ")
+
+# Step 8: Preprocess and Predict
+user_vector = vectorizer.transform([user_input])
+prediction = model.predict(user_vector)
+
+# Step 9: Output the Result
+if prediction[0] == 1:
+    print("The email is SPAM.")
+else:
+    print("The email is NOT SPAM.")
